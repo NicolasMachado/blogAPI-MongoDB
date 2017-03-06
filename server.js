@@ -9,22 +9,15 @@ mongoose.Promise = global.Promise;
 // config.js is where we control constants for entire
 // app like PORT and DATABASE_URL
 const {PORT, DATABASE_URL} = require('./config');
-const {Restaurant} = require('./models');
+const {Post} = require('./models');
 
 const app = express();
 app.use(bodyParser.json());
 
 
 // GET requests to /restaurants => return 10 restaurants
-app.get('/restaurants', (req, res) => {
-    const filters = {};
-    const queryableFields = ['cuisine', 'borough'];
-    queryableFields.forEach(field => {
-        if (req.query[field]) {
-            filters[field] = req.query[field];
-        }
-    });
-    Restaurant
+app.get('/posts', (req, res) => {
+    Post
         .find(filters)
         .exec()
         .then(Restaurants => res.json(
@@ -35,7 +28,7 @@ app.get('/restaurants', (req, res) => {
             res.status(500).json({message: 'Internal server error'})
         });
 });
-
+/*
 // can also request by ID
 app.get('/restaurants/:id', (req, res) => {
   Restaurant
@@ -116,7 +109,7 @@ app.delete('/restaurants/:id', (req, res) => {
     .then(restaurant => res.status(204).end())
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
-
+*/
 // catch-all endpoint if client makes request to non-existent endpoint
 app.use('*', function(req, res) {
   res.status(404).json({message: 'Not Found'});
