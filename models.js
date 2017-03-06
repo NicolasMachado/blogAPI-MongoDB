@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const postSchema = mongoose.Schema({
   title: {type: String, required: true},
   content: {type: String, required: true},
+  date: {type: Date, required: false},
   author: {
     firstName: String,
     lastName: String
@@ -16,7 +17,7 @@ const postSchema = mongoose.Schema({
 // to generate a human readable string based on the address object
 // we're storing in Mongo.
 postSchema.virtual('fullName').get(function() {
-  return `${this.author.firstname} ${this.author.lastname}`.trim()});
+  return `${this.author.firstName} ${this.author.lastName}`.trim()});
 /*
 // this virtual grabs the most recent grade for a restaurant.
 postSchema.virtual('grade').get(function() {
@@ -29,14 +30,16 @@ postSchema.virtual('grade').get(function() {
 // exposes *some* of the fields we want from the underlying data
 postSchema.methods.apiRepr = function() {
   return {
-  title: "this.title",
-  content: "this.content",
-  author: 'bleh'
+  title: this.title,
+  content: this.content,
+  author: this.fullName,
+  created: this.date || 'Date unknown',
+  id: this._id
   };
 }
 
 // note that all instance methods and virtual properties on our
 // schema must be defined *before* we make the call to `.model`.
-const BlogPost = mongoose.model('BlogPost', postSchema);
+const Blogpost = mongoose.model('Blogpost', postSchema);
 
-module.exports = {BlogPost};
+module.exports = {Blogpost};

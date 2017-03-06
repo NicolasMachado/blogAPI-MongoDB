@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 const {PORT, DATABASE_URL} = require('./config');
-const {BlogPost} = require('./models');
+const {Blogpost} = require('./models');
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,35 +16,33 @@ app.use(bodyParser.json());
 // GET requests to /posts
 app.get('/posts', (req, res) => {
   console.log("GET en cours");
-    BlogPost
+    Blogpost
         .find({})
-        .exec()
-        .then(Posts => res.json(
-            Posts.map(post => post.apiRepr())
+        .then(posts => res.json(
+            posts.map(post => post.apiRepr())
         ))
         .catch(err => {
             console.error(err);
             res.status(500).json({message: 'Internal server error'})
         });
 });
-/*
-// can also request by ID
-app.get('/restaurants/:id', (req, res) => {
-  Restaurant
-    // this is a convenience method Mongoose provides for searching
-    // by the object _id property
-    .findById(req.params.id)
-    .exec()
-    .then(restaurant =>res.json(restaurant.apiRepr()))
-    .catch(err => {
-      console.error(err);
-        res.status(500).json({message: 'Internal server error'})
-    });
+
+// GET requests to /posts/:id
+app.get('/posts/:id', (req, res) => {
+  console.log(req.params.id);
+    Blogpost
+        .findById(req.params.id)
+        .exec()
+        .then(post => {res.json(post.apiRepr())})
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({message: `Couldn't find this post`})
+        });
 });
 
-app.post('/restaurants', (req, res) => {
+app.post('/posts', (req, res) => {
 
-  const requiredFields = ['name', 'borough', 'cuisine'];
+  const requiredFields = ['title', 'content', 'author'];
   for (let i=0; i<requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -54,15 +52,15 @@ app.post('/restaurants', (req, res) => {
     }
   }
 
-  Restaurant
+  Blogpost
     .create({
-      name: req.body.name,
-      borough: req.body.borough,
-      cuisine: req.body.cuisine,
-      grades: req.body.grades,
-      address: req.body.address})
+      title: req.body.title,
+      content: req.body.content,
+      author: req.body.author,
+      date: new Date()
+    })
     .then(
-      restaurant => res.status(201).json(restaurant.apiRepr()))
+      post => res.status(201).json(post.apiRepr()))
     .catch(err => {
       console.error(err);
       res.status(500).json({message: 'Internal server error'});
@@ -70,7 +68,7 @@ app.post('/restaurants', (req, res) => {
 });
 
 
-app.put('/restaurants/:id', (req, res) => {
+app.put('/posts/:id', (req, res) => {
   // ensure that the id in the request path and the one in request body match
   if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
     const message = (
@@ -84,19 +82,20 @@ app.put('/restaurants/:id', (req, res) => {
   // if the user sent over any of the updatableFields, we udpate those values
   // in document
   const toUpdate = {};
-  const updateableFields = ['name', 'borough', 'cuisine', 'address'];
-
+  toUpdate.date = new Date();
+  const updateableFields = ['title', 'content', 'author'];
   updateableFields.forEach(field => {
     if (field in req.body) {
       toUpdate[field] = req.body[field];
     }
   });
+  console.log(toUpdate);
 
-  Restaurant
+  Blogpost
     // all key/value pairs in toUpdate will be updated -- that's what `$set` does
     .findByIdAndUpdate(req.params.id, {$set: toUpdate})
     .exec()
-    .then(restaurant => res.status(204).end())
+    .then(post => res.status(201).json(post.apiRepr())) // updated content doesn't show mmediately?
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
@@ -107,7 +106,7 @@ app.delete('/restaurants/:id', (req, res) => {
     .then(restaurant => res.status(204).end())
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
-*/
+
 // catch-all endpoint if client makes request to non-existent endpoint
 app.use('*', function(req, res) {
   res.status(404).json({message: 'Not Found'});
