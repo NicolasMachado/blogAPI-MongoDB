@@ -11,7 +11,7 @@ const {Blogpost} = require('./models');
 
 const app = express();
 app.use(bodyParser.json());
-
+app.use(express.static('views'));
 
 // GET requests to /posts
 app.get('/posts', (req, res) => {
@@ -99,11 +99,11 @@ app.put('/posts/:id', (req, res) => {
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
-app.delete('/restaurants/:id', (req, res) => {
-  Restaurant
+app.delete('/posts/:id', (req, res) => {
+  Blogpost
     .findByIdAndRemove(req.params.id)
     .exec()
-    .then(restaurant => res.status(204).end())
+    .then(post => res.status(204).end())
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
