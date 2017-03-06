@@ -14,7 +14,6 @@ $(function() {
 });
 
 function displayAll(query) {
-	console.log(query);
 	$('.posts-container').empty();
 	query.forEach(object => {
 		$('.posts-container').append(
@@ -59,15 +58,9 @@ let config = {
     }
 };
     $.ajax(config);
-	console.log(postID);
 }
 
 function addPost(event) {
-	console.log(event.target[0].value);
-	console.log(event.target[1].value);
-	console.log(event.target[2].value);
-	console.log(event.target[3].value);
-
 	let config = {
 	    async: true,
 	    crossDomain: false,
@@ -76,14 +69,14 @@ function addPost(event) {
 	    headers: {},
     	contentType: 'application/json',
     	dataType: 'json',
-	    data: {
+	    data: JSON.stringify({
 	    	"title": event.target[0].value,
 	    	"content": event.target[3].value,
 	    	"author": {
 			    "firstName": event.target[1].value,
 			    "lastName": event.target[2].value
 	    	}
-	    },
+	    }),
 	    success: getAll,
 	    error: function (result, status, error) {
 	        console.log(result + " - " + status + " - " + error);
