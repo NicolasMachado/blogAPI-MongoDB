@@ -6,22 +6,21 @@ const mongoose = require('mongoose');
 // but its better to make Mongoose use built in es6 promises
 mongoose.Promise = global.Promise;
 
-// config.js is where we control constants for entire
-// app like PORT and DATABASE_URL
 const {PORT, DATABASE_URL} = require('./config');
-const {Post} = require('./models');
+const {BlogPost} = require('./models');
 
 const app = express();
 app.use(bodyParser.json());
 
 
-// GET requests to /restaurants => return 10 restaurants
+// GET requests to /posts
 app.get('/posts', (req, res) => {
-    Post
-        .find(filters)
+  console.log("GET en cours");
+    BlogPost
+        .find({})
         .exec()
-        .then(Restaurants => res.json(
-            Restaurants.map(restaurant => restaurant.apiRepr())
+        .then(Posts => res.json(
+            Posts.map(post => post.apiRepr())
         ))
         .catch(err => {
             console.error(err);
@@ -42,7 +41,6 @@ app.get('/restaurants/:id', (req, res) => {
         res.status(500).json({message: 'Internal server error'})
     });
 });
-
 
 app.post('/restaurants', (req, res) => {
 
