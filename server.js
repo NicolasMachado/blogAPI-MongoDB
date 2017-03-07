@@ -40,6 +40,7 @@ app.get('/posts/:id', (req, res) => {
         });
 });
 
+// POST
 app.post('/posts', (req, res) => {
 
   const requiredFields = ['title', 'content', 'author'];
@@ -67,7 +68,7 @@ app.post('/posts', (req, res) => {
     });
 });
 
-
+// PUT
 app.put('/posts/:id', (req, res) => {
   // ensure that the id in the request path and the one in request body match
   if (!(req.params.id && req.body.id && req.params.id === req.body.id)) {
