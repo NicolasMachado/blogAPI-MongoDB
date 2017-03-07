@@ -18,13 +18,7 @@ const postSchema = mongoose.Schema({
 // we're storing in Mongo.
 postSchema.virtual('fullName').get(function() {
   return `${this.author.firstName} ${this.author.lastName}`.trim()});
-/*
-// this virtual grabs the most recent grade for a restaurant.
-postSchema.virtual('grade').get(function() {
-  const gradeObj = this.grades.sort((a, b) => {return b.date - a.date})[0] || {};
-  return gradeObj.grade;
-});
-*/
+
 // this is an *instance method* which will be available on all instances
 // of the model. This method will be used to return an object that only
 // exposes *some* of the fields we want from the underlying data
