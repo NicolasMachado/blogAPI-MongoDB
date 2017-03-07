@@ -1,6 +1,6 @@
-let server = "http://127.0.0.1:8080";
+const server = "";
 let method = "GET";
-let methUrl = "/posts/"
+const methUrl = "/posts/"
 
 $(function() {
 	getAll();
@@ -20,12 +20,14 @@ function displayAll(query) {
 	$('.posts-container').empty();
 	query.forEach(object => {
 		$('.posts-container').append(
-			`<h3>${object.author} - ${object.created} - ${object.id}</h3>
+			`<article>
+			<h3>${object.author} - ${object.created} - ${object.id}</h3>
 			<h4>${object.title}</h4>
 			<p>${object.content}</p>
 			<span class="delete-button" data-id="${object.id}">DELETE</span> - 
 			<span class="edit-button" data-id="${object.id}">EDIT</span>
-			<br><br>`
+			<br><br>
+			</article>`
 			);
 	});
 }

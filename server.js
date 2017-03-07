@@ -15,7 +15,6 @@ app.use(express.static('views'));
 
 // GET requests to /posts
 app.get('/posts', (req, res) => {
-  console.log("GET en cours");
     Blogpost
         .find({})
         .then(posts => res.json(
@@ -29,14 +28,13 @@ app.get('/posts', (req, res) => {
 
 // GET requests to /posts/:id
 app.get('/posts/:id', (req, res) => {
-  console.log(req.params.id);
     Blogpost
         .findById(req.params.id)
         .exec()
         .then(post => {res.json(post.apiRepr())})
         .catch(err => {
             console.error(err);
-            res.status(500).json({message: `Couldn't find this post`})
+            res.status(500).json({message: `Internal server error`})
         });
 });
 
@@ -100,6 +98,7 @@ app.put('/posts/:id', (req, res) => {
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
+// DELETE
 app.delete('/posts/:id', (req, res) => {
   Blogpost
     .findByIdAndRemove(req.params.id)
