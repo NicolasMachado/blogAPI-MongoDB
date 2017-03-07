@@ -15,6 +15,7 @@ app.use(express.static('views'));
 app.get('/posts', (req, res) => {
     Blogpost
         .find({})
+        .sort({date: -1})
         .then(posts => res.json(
             posts.map(post => post.apiRepr())
         ))
